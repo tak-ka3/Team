@@ -3,6 +3,7 @@ import './App.css';
 import React, {useEffect, useState} from 'react'
 import fetch from 'node-fetch';
 import jsdom from 'jsdom';
+import axios from 'axios'
 
 function App() {
 
@@ -11,75 +12,68 @@ function App() {
 
   const [account_array, setAccount_array] = useState([''])
   const [input, setInput]  = useState(['data.0'])
-  const [array, setArray] = useState([])
+  // const [array, setArray] = useState([])
 
   const doChange = (e) => {
-    let data = array
-    data[Number(e.target.value)] = e.target.value
+    let data = account_array
+    data[Number(e.target.name)] = e.target.value
     setAccount_array(data)
-    console.log(data)
-  }
-
-  const onAddAccount = (e) => {
-    // data.push(accountName)
-    // setAccount_array(data)
-    // console.log(data)
-    // console.log(account_array)
-    console.log(account_array)
-    e.preventDefault()
   }
 
   function addInput() {
     const newInput = [...input];
     newInput.push(`data.${(input.length)}`);
     setInput(newInput);
-    let data = array
+    let data = account_array
     data.push("")
     setAccount_array(data)
-    console.log(data)
   };
 
-  useEffect(() => {
-
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-    })
-
+  const onAddAccount = (e) => {
+    console.log(account_array)
+    e.preventDefault()
     let languages_url
-    // let data = []
-    console.log("a")
-
-    fetch("https://api.github.com/users/tak-ka3/repos")
-    .then(response => response.json())
-    .then(data => {
-      data.map((val) => {
-        languages_url = val.languages_url
-        fetch(languages_url)
-        .then(res => res.json())
-        .then(data => {
+    account_array.map((name) => {
+      fetch(`https://api.github.com/users/${name}/repos`)
+      .then(response => response.json())
+      .then(d => {
+        d.map((val) => {
+          languages_url = val.languages_url
+          fetch(languages_url)
+          .then(res => res.json())
+          .then(data => {
+            console.log(data)
+            return data
+          })
+          return val;
         })
       })
     })
+  }
 
+  useEffect(() => {
 
-  //   const { JSDOM } = jsdom;
-  // const request = require('request');
+    // contributionの取得が上手くいかない
+    axios.get(url)
+      .then((res) => {
+        console.log(res.data)
+      })
 
-  // const userName = "tak-ka3";
+    
+    // let data = []
+    console.log("a")
 
-  // var options = {
-  //   url: `https://github.com/users/${userName}/contributions`
-  // }
-
-  // request(options, function (error, response, body) {
-  //   body = body.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g,''); // タグを除去
-  //   body = body.replace(/ |,|\r?\n/g, '');                  // 不要な文字を除去
-  //   body = body.match(/^[0-9]*/);
-  //   console.log(body[0]);
-  //   console.log(body)
-  // })
+    // fetch("https://api.github.com/users/tak-ka3/repos")
+    // .then(response => response.json())
+    // .then(data => {
+    //   data.map((val) => {
+    //     languages_url = val.languages_url
+    //     fetch(languages_url)
+    //     .then(res => res.json())
+    //     .then(data => {
+    //     })
+    //   })
+    // })
   }, [])
 
   return (
@@ -94,7 +88,7 @@ function App() {
           </div>
         })}
         <input type = 'button' className = "btn" onClick = {addInput} value = "plus"/>
-        <input type = "submit" className = "btn" value = "Click"/>
+        <input type = "submit" className = "btn" value = "Submit"/>
       </form>
     </div>
   );
