@@ -4,6 +4,8 @@ import React, {useEffect, useState} from 'react'
 import fetch from 'node-fetch';
 import jsdom from 'jsdom';
 import axios from 'axios'
+import {firestore} from './firebase'
+import GetFire from './fireGet'
 
 function App() {
 
@@ -54,26 +56,23 @@ function App() {
   useEffect(() => {
 
     // contributionの取得が上手くいかない
-    axios.get(url)
-      .then((res) => {
-        console.log(res.data)
-      })
+    // axios.get(url)
+    //   .then((res) => {
+    //     console.log(res.data)
+    //   })
 
     
     // let data = []
-    console.log("a")
-
-    // fetch("https://api.github.com/users/tak-ka3/repos")
-    // .then(response => response.json())
-    // .then(data => {
-    //   data.map((val) => {
-    //     languages_url = val.languages_url
-    //     fetch(languages_url)
-    //     .then(res => res.json())
-    //     .then(data => {
+    // firestore
+    //   .collection("user")
+    //   .onSnapshot((col) => {
+    //     const data = col.docs.map((doc) => {
+    //       console.log(doc)
     //     })
     //   })
-    // })
+
+
+    console.log("a")
   }, [])
 
   return (
@@ -90,6 +89,7 @@ function App() {
         <input type = 'button' className = "btn" onClick = {addInput} value = "plus"/>
         <input type = "submit" className = "btn" value = "Submit"/>
       </form>
+      <GetFire/>
     </div>
   );
 }
